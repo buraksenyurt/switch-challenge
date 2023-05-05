@@ -14,6 +14,7 @@ class Program
                 MidName = "Cunyir",
                 LastName = "Stark"
             },
+            Email = "toni_stark@sipeys.y"
         };
 
         var processor = new CustomerLogic();
@@ -25,27 +26,34 @@ class Program
 
 class CustomerLogic
 {
+    //PROBLEM: Fonksiyon switch'lerden kurtularak yazılabilmeli
     public ReturnMessage<Customer> CalculateBonus(Customer customer, CustomerProcessState customerProcessState)
     {
+        var postman = new Publisher();
         var rm = new ReturnMessage<Customer>();
         rm.ReturnCode = ReturnCode.Unsuccess;
         rm.Payload = customer;
 
         customer.ModifiedDate = DateTime.Now;
+        customer.CalculatedBonus = new Bonus();
+        customer.CalculatedBonus.CustomerId = customer.Id;
 
         switch (customerProcessState)
         {
             case CustomerProcessState.OnAcceptingPhase:
+                customer.CalculatedBonus.IsActive = true;
+                customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddDays(3);
+                customer.CalculatedBonus.Value = 45;
                 rm.ReturnCode = ReturnCode.Unsuccess;
                 break;
             case CustomerProcessState.IrregularPayments:
-                rm.ReturnCode = ReturnCode.Unsuccess;
-                break;
             case CustomerProcessState.UnsufficentLimit:
-                rm.ReturnCode = ReturnCode.Unsuccess;
-                break;
             case CustomerProcessState.Investigating:
+                customer.CalculatedBonus.IsActive = false;
+                customer.CalculatedBonus.BonusValidationDate = DateTime.MinValue;
+                customer.CalculatedBonus.Value = 0;
                 rm.ReturnCode = ReturnCode.Unsuccess;
+                postman.SendToManager("Müşteri ödeme ve limitleri düzensiz ya da incelemede.");
                 break;
             case CustomerProcessState.Subscriber:
             case CustomerProcessState.Unleashed:
@@ -54,10 +62,20 @@ class CustomerLogic
                     case CustomerType.Gold:
                     case CustomerType.Platinium:
                     case CustomerType.Basic:
+                        customer.CalculatedBonus.IsActive = true;
+                        customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddMonths(1);
+                        customer.CalculatedBonus.Value = 990.99M;
+                        postman.Send(customer);
+                        postman.SendToManager($"{customer.Title.LastName}. Özel müşterimiz var.");
                         rm.ReturnCode = ReturnCode.Success;
+
                         break;
                     case CustomerType.Newbee:
+                        customer.CalculatedBonus.IsActive = true;
+                        customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddDays(7);
+                        customer.CalculatedBonus.Value = 100;
                         rm.ReturnCode = ReturnCode.Unsuccess;
+                        postman.Send(customer);
                         break;
                 }
                 break;
@@ -69,6 +87,19 @@ class CustomerLogic
     }
 }
 
+//BONUS PROBLEM: Gönderim kanalları bağımlılığı azaltılmalı
+class Publisher
+{
+    public void Send(Customer customer)
+    {
+        Console.WriteLine($"{customer.Email} adresine bildirim yapılacak");
+    }
+    public void SendToManager(string state)
+    {
+        Console.WriteLine($"'{state}' durumu ilgili yönetici bilgilendirilecek");
+    }
+}
+
 class Customer
 {
     public int Id { get; set; }
@@ -77,6 +108,7 @@ class Customer
     public decimal Balance { get; set; }
     public Bonus CalculatedBonus { get; set; } = new();
     public DateTime ModifiedDate { get; set; }
+    public string Email { get; set; } = string.Empty;
 }
 
 class Bonus
