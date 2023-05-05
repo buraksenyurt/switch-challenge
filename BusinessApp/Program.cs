@@ -17,9 +17,9 @@ class Program
         };
 
         var processor = new CustomerLogic();
-        var result = processor.CalculateBonus(toni_stark, CustomerProcessState.Vip);
+        var result = processor.CalculateBonus(toni_stark, CustomerProcessState.Unleashed);
 
-        Console.WriteLine($"{result.ReturnCode}");
+        Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}'");
     }
 }
 
@@ -35,22 +35,29 @@ class CustomerLogic
 
         switch (customerProcessState)
         {
-            case CustomerProcessState.Valid:
-                break;
-            case CustomerProcessState.NewSubscriber:
+            case CustomerProcessState.OnAcceptingPhase:
+                rm.ReturnCode = ReturnCode.Unsuccess;
                 break;
             case CustomerProcessState.IrregularPayments:
+                rm.ReturnCode = ReturnCode.Unsuccess;
                 break;
             case CustomerProcessState.UnsufficentLimit:
+                rm.ReturnCode = ReturnCode.Unsuccess;
                 break;
-            case CustomerProcessState.Vip:
+            case CustomerProcessState.Investigating:
+                rm.ReturnCode = ReturnCode.Unsuccess;
+                break;
+            case CustomerProcessState.Subscriber:
+            case CustomerProcessState.Unleashed:
                 switch (customer.CustomerType)
                 {
                     case CustomerType.Gold:
                     case CustomerType.Platinium:
                     case CustomerType.Basic:
+                        rm.ReturnCode = ReturnCode.Success;
                         break;
                     case CustomerType.Newbee:
+                        rm.ReturnCode = ReturnCode.Unsuccess;
                         break;
                 }
                 break;
@@ -110,10 +117,10 @@ enum ReturnCode
 
 enum CustomerProcessState
 {
-    Invalid,
-    Valid,
-    NewSubscriber,
+    Subscriber,
+    Investigating,
+    OnAcceptingPhase,
     UnsufficentLimit,
     IrregularPayments,
-    Vip
+    Unleashed
 }
