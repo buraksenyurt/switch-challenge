@@ -2,6 +2,7 @@
 using BusinessApp.Contracts;
 using BusinessApp.Model;
 using BusinessApp.Shared;
+using BusinessApp.Shared.Services;
 
 namespace BusinessApp;
 class Program
@@ -19,13 +20,23 @@ class Program
                 MidName = "Cunyir",
                 LastName = "Stark"
             },
-            Email = "toni_stark@sipeys.y"
+            Email = "toni_stark@sipeys.y",
+            Owner = new Manager
+            {
+                Id = 76,
+                Title = new FullName
+                {
+                    FirstName = "John",
+                    LastName = "Doe"
+                },
+                Email = "john@doe.com"
+            }
         };
 
-        var process_state=CustomerProcessState.Unleashed;        
-        var processor = new CustomerLogic();   
+        var process_state = CustomerProcessState.Subscriber;
+        var processor = new CustomerLogic();
         //PROBLEM: Enum sabiti türünden kullanılması gereken Interface implementasyonunu nasıl çözümleyebiliriz 
-        var result=processor.CalculateBonus(new ProcessInvalid(),toni_stark);
+        var result = processor.CalculateBonus(new ProcessByCustomerType(new EmailPublisher()), toni_stark);
         //var result = processor.CalculateBonus(toni_stark, process_state);
 
         Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}'");

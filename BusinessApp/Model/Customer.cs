@@ -11,6 +11,7 @@ namespace BusinessApp.Model
         public Bonus CalculatedBonus { get; set; } = new();
         public DateTime ModifiedDate { get; set; }
         public string Email { get; set; } = string.Empty;
+        public Manager Owner { get; set; } = new();
     }
 
 }

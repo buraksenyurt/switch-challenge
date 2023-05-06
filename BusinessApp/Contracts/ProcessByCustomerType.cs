@@ -7,12 +7,17 @@ namespace BusinessApp.Contracts
     public class ProcessByCustomerType
         : IProcessContract
     {
+        private readonly IPublisher _publisher;
+
+        public ProcessByCustomerType(IPublisher publisher)
+        {
+            _publisher = publisher;
+        }
+
         //PROBLEM: Burada da switch'ten kurtulabilmek lazım
         public ReturnMessage<Customer> ApplyState(Customer customer)
         {
             ReturnMessage<Customer> rm = new ReturnMessage<Customer>();
-            Publisher postman = new Publisher();
-
             switch (customer.CustomerType)
             {
                 case CustomerType.Gold:
@@ -21,8 +26,8 @@ namespace BusinessApp.Contracts
                     customer.CalculatedBonus.IsActive = true;
                     customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddMonths(1);
                     customer.CalculatedBonus.Value = 990.99M;
-                    postman.Send(customer);
-                    postman.SendToManager($"{customer.Title.LastName}. Özel müşterimiz var.");
+                    _publisher.Send(customer.Email, string.Empty);
+                    _publisher.Send(customer.Owner.Email, $"{customer.Title.LastName}. Özel müşterimiz var.");
                     rm.ReturnCode = ReturnCode.Success;
                     break;
                 case CustomerType.Newbee:
@@ -30,7 +35,7 @@ namespace BusinessApp.Contracts
                     customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddDays(7);
                     customer.CalculatedBonus.Value = 100;
                     rm.ReturnCode = ReturnCode.Unsuccess;
-                    postman.Send(customer);
+                    _publisher.Send(customer.Email, string.Empty);
                     break;
             }
             rm.Payload = customer;

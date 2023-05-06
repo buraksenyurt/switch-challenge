@@ -7,6 +7,12 @@ namespace BusinessApp.Contracts
     public class ProcessInvalid
         : IProcessContract
     {
+        private readonly IPublisher _publisher;
+
+        public ProcessInvalid(IPublisher publisher)
+        {
+            _publisher=publisher;
+        }
         public ReturnMessage<Customer> ApplyState(Customer customer)
         {
             ReturnMessage<Customer> rm=new ReturnMessage<Customer>();
@@ -16,9 +22,7 @@ namespace BusinessApp.Contracts
             rm.ReturnCode = ReturnCode.Unsuccess;
             rm.Payload=customer;
 
-            //PROBLEM: Bu bağımlılıkta sınıf dışına alınabilir
-            Publisher postman=new Publisher();
-            postman.SendToManager("Müşteri ödeme ve limitleri düzensiz ya da incelemede.");
+            _publisher.Send(customer.Email,"Müşteri ödeme ve limitleri düzensiz ya da incelemede.");
 
             return rm;
         }
