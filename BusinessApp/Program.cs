@@ -1,4 +1,5 @@
 ﻿using BusinessApp.Business;
+using BusinessApp.Contracts;
 using BusinessApp.Model;
 using BusinessApp.Shared;
 
@@ -21,8 +22,11 @@ class Program
             Email = "toni_stark@sipeys.y"
         };
 
-        var processor = new CustomerLogic();
-        var result = processor.CalculateBonus(toni_stark, CustomerProcessState.Unleashed);
+        var process_state=CustomerProcessState.Unleashed;        
+        var processor = new CustomerLogic();   
+        //PROBLEM: Enum sabiti türünden kullanılması gereken Interface implementasyonunu nasıl çözümleyebiliriz 
+        var result=processor.CalculateBonus(new ProcessInvalid(),toni_stark);
+        //var result = processor.CalculateBonus(toni_stark, process_state);
 
         Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}'");
     }
