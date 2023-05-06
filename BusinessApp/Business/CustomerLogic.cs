@@ -21,22 +21,22 @@ namespace BusinessApp.Business
 
             switch (customerProcessState)
             {
-                case CustomerProcessState.OnAcceptingPhase:
+                case CustomerProcessState.OnAcceptingPhase: // ProcessOnAccept
                     customer.CalculatedBonus.IsActive = true;
                     customer.CalculatedBonus.BonusValidationDate = DateTime.Now.AddDays(3);
                     customer.CalculatedBonus.Value = 45;
                     rm.ReturnCode = ReturnCode.Unsuccess;
                     break;
-                case CustomerProcessState.IrregularPayments:
-                case CustomerProcessState.UnsufficentLimit:
-                case CustomerProcessState.Investigating:
+                case CustomerProcessState.IrregularPayments: //ProcessInvalid
+                case CustomerProcessState.UnsufficentLimit: //ProcessInvalid
+                case CustomerProcessState.Investigating: //ProcessInvalid
                     customer.CalculatedBonus.IsActive = false;
                     customer.CalculatedBonus.BonusValidationDate = DateTime.MinValue;
                     customer.CalculatedBonus.Value = 0;
                     rm.ReturnCode = ReturnCode.Unsuccess;
                     postman.SendToManager("Müşteri ödeme ve limitleri düzensiz ya da incelemede.");
                     break;
-                case CustomerProcessState.Subscriber:
+                case CustomerProcessState.Subscriber: //ProcessByCustomerType
                 case CustomerProcessState.Unleashed:
                     switch (customer.CustomerType)
                     {
