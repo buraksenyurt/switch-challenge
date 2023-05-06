@@ -2,11 +2,11 @@ namespace BusinessApp.Business
 {
     public enum CustomerProcessState
     {
-        Subscriber,
-        Investigating,
-        OnAcceptingPhase,
-        UnsufficentLimit,
+        OnAcceptingPhase,        
         IrregularPayments,
+        UnsufficentLimit,
+        Investigating,  
+        Subscriber,
         Unleashed
     }
 }

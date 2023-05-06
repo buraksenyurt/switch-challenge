@@ -6,7 +6,7 @@ namespace BusinessApp.Contracts
     public class ProcessOnAccept
         : IProcessContract
     {
-        public ReturnMessage<Customer> ApplyState(Customer customer)
+        public ReturnMessage<Customer> Apply(Customer customer)
         {
             ReturnMessage<Customer> rm = new ReturnMessage<Customer>();
             customer.CalculatedBonus.IsActive = true;

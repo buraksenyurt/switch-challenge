@@ -33,11 +33,27 @@ class Program
             }
         };
 
-        var process_state = CustomerProcessState.Subscriber;
-        var processor = new CustomerLogic();
         //PROBLEM: Enum sabiti türünden kullanılması gereken Interface implementasyonunu nasıl çözümleyebiliriz 
+        // Belki aşağıdaki gibi bir map sistemi ile hangi enum sabiti için hangi sınıf tipini kullanacağımızı belirtebiliriz.
+        //SORU: Enum türüne göre ilgili sınıf adını yakaladık. Sınıfa ait nesne örneğini Runtime'da nasıl ayağa kaldırırız? Activator olabilir mi?
+        Dictionary<String, List<CustomerProcessState>> map = new Dictionary<string, List<CustomerProcessState>>();
+        map.Add("ProcessOnAccept", new List<CustomerProcessState> { CustomerProcessState.OnAcceptingPhase });
+        map.Add("ProcessInvalid", new List<CustomerProcessState> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
+        map.Add("ProcessByCustomerType", new List<CustomerProcessState> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
+
+        var process_state = CustomerProcessState.Subscriber;
+        foreach (var (k, v) in map)
+        {
+            if (v.Contains(process_state))
+            {
+                var type_name = k;
+                Console.WriteLine($"Type name is {type_name}");
+                break;
+            }
+        }
+
+        var processor = new CustomerLogic();        
         var result = processor.CalculateBonus(new ProcessByCustomerType(new EmailPublisher()), toni_stark);
-        //var result = processor.CalculateBonus(toni_stark, process_state);
 
         Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}'");
     }

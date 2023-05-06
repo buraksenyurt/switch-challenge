@@ -13,7 +13,7 @@ namespace BusinessApp.Business
             customer.ModifiedDate = DateTime.Now;
             customer.CalculatedBonus = new Bonus();
             customer.CalculatedBonus.CustomerId = customer.Id;
-            var result = contract.ApplyState(customer);
+            var result = contract.Apply(customer);
             return result;
         }
 

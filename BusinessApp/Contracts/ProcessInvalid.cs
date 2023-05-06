@@ -13,7 +13,7 @@ namespace BusinessApp.Contracts
         {
             _publisher=publisher;
         }
-        public ReturnMessage<Customer> ApplyState(Customer customer)
+        public ReturnMessage<Customer> Apply(Customer customer)
         {
             ReturnMessage<Customer> rm=new ReturnMessage<Customer>();
             customer.CalculatedBonus.IsActive = false;

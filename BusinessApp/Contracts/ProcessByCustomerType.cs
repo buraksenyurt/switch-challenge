@@ -15,7 +15,7 @@ namespace BusinessApp.Contracts
         }
 
         //PROBLEM: Burada da switch'ten kurtulabilmek lazım
-        public ReturnMessage<Customer> ApplyState(Customer customer)
+        public ReturnMessage<Customer> Apply(Customer customer)
         {
             ReturnMessage<Customer> rm = new ReturnMessage<Customer>();
             switch (customer.CustomerType)
