@@ -1,9 +1,7 @@
 ﻿using BusinessApp.Business;
-using BusinessApp.Contracts;
 using BusinessApp.IoC;
 using BusinessApp.Model;
 using BusinessApp.Shared;
-using BusinessApp.Shared.Services;
 
 namespace BusinessApp;
 class Program
@@ -21,7 +19,7 @@ class Program
                 MidName = "Cunyir",
                 LastName = "Stark"
             },
-            Email = "toni_stark@sipeys.y",
+            Email = "toni_stark@sipeys.x",
             Owner = new Manager
             {
                 Id = 76,
@@ -42,7 +40,7 @@ class Program
             var processor = new CustomerLogic();
             var result = processor.CalculateBonus(contract, toni_stark);
 
-            Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}'");
+            Console.WriteLine($"Bonus calculation result is '{result.ReturnCode}',Calculated Bonus is {result.Payload.CalculatedBonus.Value}");
         }
         else
         {
