@@ -6,8 +6,13 @@ using BusinessApp.Shared.Services;
 namespace BusinessApp.Contracts
 {
     public class ProcessByCustomerType
-        : IProcessContract
+        : BaseContract, IProcessContract
     {
+        public ProcessByCustomerType(IPublisher publisher)
+            : base(publisher)
+        {
+        }
+
         public ReturnMessage<Customer> Apply(Customer customer)
         {
             var instace = Resolver.GetTypedContract(customer.CustomerType);

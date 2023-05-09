@@ -4,12 +4,11 @@ using BusinessApp.Shared;
 namespace BusinessApp.Contracts
 {
     public class ProcessSecondStage
-        : ITypedProcessContract
+        : BaseContract, ITypedProcessContract
     {
-        private readonly IPublisher _publisher;
         public ProcessSecondStage(IPublisher publisher)
+            : base(publisher)
         {
-            _publisher = publisher;
         }
         public ReturnMessage<Customer> Apply(Customer customer)
         {

@@ -4,8 +4,12 @@ using BusinessApp.Shared;
 namespace BusinessApp.Contracts
 {
     public class ProcessOnAccept
-        : IProcessContract
+        : BaseContract, IProcessContract
     {
+        public ProcessOnAccept(IPublisher publisher)
+            : base(publisher)
+        {
+        }
         public ReturnMessage<Customer> Apply(Customer customer)
         {
             ReturnMessage<Customer> rm = new ReturnMessage<Customer>();

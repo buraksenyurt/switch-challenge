@@ -36,7 +36,6 @@ class Program
         var contract = Resolver.GetContract(process_state);
         if (contract != null)
         {
-
             var processor = new CustomerLogic();
             var result = processor.CalculateBonus(contract, toni_stark);
 

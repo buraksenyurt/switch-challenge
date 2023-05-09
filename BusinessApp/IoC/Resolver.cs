@@ -37,7 +37,7 @@ namespace BusinessApp.IoC
                 return null;
 
             //PROBLEM Bazı nesne yapıcılarında IPublisher ihtiyacı var. Bazılarında yok. Opsiyonel. Nasıl çözeriz?
-            dynamic? instance = Activator.CreateInstance(objectType) as IProcessContract;
+            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as IProcessContract;
             return instance;
         }
 
@@ -56,7 +56,7 @@ namespace BusinessApp.IoC
             if (objectType == null)
                 return null;
 
-            dynamic? instance = Activator.CreateInstance(objectType,new EmailPublisher()) as ITypedProcessContract;
+            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as ITypedProcessContract;
             return instance;
         }
     }
