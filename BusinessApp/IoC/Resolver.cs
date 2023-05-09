@@ -7,28 +7,27 @@ namespace BusinessApp.IoC
 {
     public static class Resolver
     {
-        private static Dictionary<String, List<CustomerProcessState>> map = new Dictionary<string, List<CustomerProcessState>>();
+        private static Dictionary<Type, List<CustomerProcessState>> map = new Dictionary<Type, List<CustomerProcessState>>();
 
         static Resolver()
         {
-            map.Add("ProcessOnAccept", new List<CustomerProcessState> { CustomerProcessState.OnAcceptingPhase });
-            map.Add("ProcessInvalid", new List<CustomerProcessState> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
-            map.Add("ProcessByCustomerType", new List<CustomerProcessState> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
+            map.Add(typeof(ProcessOnAccept), new List<CustomerProcessState> { CustomerProcessState.OnAcceptingPhase });
+            map.Add(typeof(ProcessInvalid), new List<CustomerProcessState> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
+            map.Add(typeof(ProcessByCustomerType), new List<CustomerProcessState> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
         }
 
         public static IProcessContract? GetContract(CustomerProcessState processState)
         {
-            var type_name = string.Empty;
+            Type? objectType = null;
             foreach (var (k, v) in map)
             {
                 if (v.Contains(processState))
                 {
-                    type_name = k;
+                    objectType = k;
                     break;
                 }
             }
 
-            var objectType = Type.GetType($"BusinessApp.Contracts.{type_name},BusinessApp");
             if (objectType == null)
                 return null;
 
