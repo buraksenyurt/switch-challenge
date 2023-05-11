@@ -1,14 +1,13 @@
 using BusinessApp.Contracts;
 using BusinessApp.Model;
 using BusinessApp.Shared;
-using BusinessApp.Shared.Services;
 
 namespace BusinessApp.Business
 {
 
     public class CustomerLogic
     {
-        public ReturnMessage<Customer> CalculateBonus(IProcessContract contract, Customer customer)
+        public ReturnMessage<Customer> CalculateBonus(IContract contract, Customer customer)
         {
             customer.ModifiedDate = DateTime.Now;
             customer.CalculatedBonus = new Bonus();

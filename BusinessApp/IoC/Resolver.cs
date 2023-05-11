@@ -7,26 +7,23 @@ namespace BusinessApp.IoC
 {
     public static class Resolver
     {
-        private static Dictionary<Type, List<CustomerProcessState>> mapMain = new Dictionary<Type, List<CustomerProcessState>>();
-        private static Dictionary<Type, List<CustomerType>> mapSub = new Dictionary<Type, List<CustomerType>>();
+        private static Dictionary<Type, List<Enum>> mapMain = new Dictionary<Type, List<Enum>>();
 
         static Resolver()
         {
-            mapMain.Add(typeof(ProcessOnAccept), new List<CustomerProcessState> { CustomerProcessState.OnAcceptingPhase });
-            mapMain.Add(typeof(ProcessInvalid), new List<CustomerProcessState> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
-            mapMain.Add(typeof(ProcessByCustomerType), new List<CustomerProcessState> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
-
-            mapSub.Add(typeof(ProcessFirstStage), new List<CustomerType> { CustomerType.Gold, CustomerType.Platinium, CustomerType.Basic });
-            mapSub.Add(typeof(ProcessSecondStage), new List<CustomerType> { CustomerType.Newbee });
+            mapMain.Add(typeof(ProcessOnAccept), new List<Enum> { CustomerProcessState.OnAcceptingPhase });
+            mapMain.Add(typeof(ProcessInvalid), new List<Enum> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
+            mapMain.Add(typeof(ProcessByCustomerType), new List<Enum> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
+            mapMain.Add(typeof(ProcessFirstStage), new List<Enum> { CustomerType.Gold, CustomerType.Platinium, CustomerType.Basic });
+            mapMain.Add(typeof(ProcessSecondStage), new List<Enum> { CustomerType.Newbee });
         }
 
-        //PROBLEM: İki map tanımlayıp her ikisi içinde iki Get... fonksiyonu oluştu. Nasıl tekleştirebiliriz?
-        public static IProcessContract? GetContract(CustomerProcessState processState)
+        public static IContract? GetContract(Enum enumValue)
         {
             Type? objectType = null;
             foreach (var (k, v) in mapMain)
             {
-                if (v.Contains(processState))
+                if (v.Contains(enumValue))
                 {
                     objectType = k;
                     break;
@@ -37,26 +34,7 @@ namespace BusinessApp.IoC
                 return null;
 
             //PROBLEM Bazı nesne yapıcılarında IPublisher ihtiyacı var. Bazılarında yok. Opsiyonel. Nasıl çözeriz?
-            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as IProcessContract;
-            return instance;
-        }
-
-        public static ITypedProcessContract? GetTypedContract(CustomerType customerType)
-        {
-            Type? objectType = null;
-            foreach (var (k, v) in mapSub)
-            {
-                if (v.Contains(customerType))
-                {
-                    objectType = k;
-                    break;
-                }
-            }
-
-            if (objectType == null)
-                return null;
-
-            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as ITypedProcessContract;
+            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as IContract;
             return instance;
         }
     }

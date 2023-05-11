@@ -4,7 +4,7 @@ using BusinessApp.Shared;
 namespace BusinessApp.Contracts
 {
     public class ProcessInvalid
-        : BaseContract, IProcessContract
+        : BaseContract, IContract
     {
         public ProcessInvalid(IPublisher publisher)
             : base(publisher)

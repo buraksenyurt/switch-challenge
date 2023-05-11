@@ -4,7 +4,7 @@ using BusinessApp.Shared;
 namespace BusinessApp.Contracts
 {
     public class ProcessSecondStage
-        : BaseContract, ITypedProcessContract
+        : BaseContract, IContract
     {
         public ProcessSecondStage(IPublisher publisher)
             : base(publisher)

@@ -1,12 +1,11 @@
 using BusinessApp.IoC;
 using BusinessApp.Model;
 using BusinessApp.Shared;
-using BusinessApp.Shared.Services;
 
 namespace BusinessApp.Contracts
 {
     public class ProcessByCustomerType
-        : BaseContract, IProcessContract
+        : BaseContract, IContract
     {
         public ProcessByCustomerType(IPublisher publisher)
             : base(publisher)
@@ -15,7 +14,7 @@ namespace BusinessApp.Contracts
 
         public ReturnMessage<Customer> Apply(Customer customer)
         {
-            var instace = Resolver.GetTypedContract(customer.CustomerType);
+            var instace = Resolver.GetContract(customer.CustomerType);
             return instace.Apply(customer);
 
             // ReturnMessage<Customer> rm = new ReturnMessage<Customer>();

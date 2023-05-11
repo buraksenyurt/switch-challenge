@@ -4,7 +4,7 @@ using BusinessApp.Shared;
 namespace BusinessApp.Contracts
 {
     public class ProcessOnAccept
-        : BaseContract, IProcessContract
+        : BaseContract, IContract
     {
         public ProcessOnAccept(IPublisher publisher)
             : base(publisher)
