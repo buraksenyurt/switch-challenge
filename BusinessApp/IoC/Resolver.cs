@@ -7,35 +7,32 @@ namespace BusinessApp.IoC
 {
     public static class Resolver
     {
-        private static Dictionary<Type, List<Enum>> mapMain = new Dictionary<Type, List<Enum>>();
+        private static Dictionary<Enum, Type> mapMain = new Dictionary<Enum, Type>();
 
         static Resolver()
         {
-            mapMain.Add(typeof(ProcessOnAccept), new List<Enum> { CustomerProcessState.OnAcceptingPhase });
-            mapMain.Add(typeof(ProcessInvalid), new List<Enum> { CustomerProcessState.IrregularPayments, CustomerProcessState.UnsufficentLimit, CustomerProcessState.Investigating });
-            mapMain.Add(typeof(ProcessByCustomerType), new List<Enum> { CustomerProcessState.Subscriber, CustomerProcessState.Unleashed });
-            mapMain.Add(typeof(ProcessFirstStage), new List<Enum> { CustomerType.Gold, CustomerType.Platinium, CustomerType.Basic });
-            mapMain.Add(typeof(ProcessSecondStage), new List<Enum> { CustomerType.Newbee });
+            mapMain.Add(CustomerProcessState.OnAcceptingPhase, typeof(ProcessOnAccept));
+            mapMain.Add(CustomerProcessState.IrregularPayments, typeof(ProcessInvalid));
+            mapMain.Add(CustomerProcessState.UnsufficentLimit, typeof(ProcessInvalid));
+            mapMain.Add(CustomerProcessState.Investigating, typeof(ProcessInvalid));
+            mapMain.Add(CustomerProcessState.Subscriber, typeof(ProcessByCustomerType));
+            mapMain.Add(CustomerProcessState.Unleashed, typeof(ProcessByCustomerType));
+            mapMain.Add(CustomerType.Gold, typeof(ProcessFirstStage));
+            mapMain.Add(CustomerType.Platinium, typeof(ProcessFirstStage));
+            mapMain.Add(CustomerType.Basic, typeof(ProcessFirstStage));
+            mapMain.Add(CustomerType.Newbee, typeof(ProcessSecondStage));
         }
 
         public static IContract? GetContract(Enum enumValue)
         {
-            Type? objectType = null;
-            foreach (var (k, v) in mapMain)
+            if (mapMain.TryGetValue(enumValue, out Type? objectType))
             {
-                if (v.Contains(enumValue))
-                {
-                    objectType = k;
-                    break;
-                }
+                //PROBLEM: Bazı nesne yapıcılarında IPublisher ihtiyacı var. Bazılarında yok. Opsiyonel. Nasıl çözeriz?
+                dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as IContract;
+                return instance;
+
             }
-
-            if (objectType == null)
-                return null;
-
-            //PROBLEM Bazı nesne yapıcılarında IPublisher ihtiyacı var. Bazılarında yok. Opsiyonel. Nasıl çözeriz?
-            dynamic? instance = Activator.CreateInstance(objectType, new EmailPublisher()) as IContract;
-            return instance;
+            return null;
         }
     }
 }
